@@ -25,7 +25,8 @@
 
 ## 📸 Screenshot
 
-![image](https://github.com/user-attachments/assets/8a75c19d-4500-4027-8e5e-2e7e581c207c)
+![image](https://github.com/user-attachments/assets/fb9f18fc-5a28-459f-9222-690a36d0f0e8)
+
 
 
 ---
