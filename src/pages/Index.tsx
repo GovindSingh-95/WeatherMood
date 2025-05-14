@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import LocationInput from "@/components/LocationInput";
 import WeatherDisplay from "@/components/WeatherDisplay";
 import ContentDisplay from "@/components/ContentDisplay";
+import SpiritAnimalDisplay from "@/components/SpiritAnimalDisplay";
 import { 
   fetchWeatherData, 
   fetchWeatherByCoords, 
@@ -140,16 +141,23 @@ const Index = () => {
         )}
         
         {weatherData && (
-          <div className="max-w-4xl mx-auto grid gap-6 md:grid-cols-2">
-            <WeatherDisplay weatherData={weatherData} />
+          <div className="max-w-4xl mx-auto grid gap-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <WeatherDisplay weatherData={weatherData} />
+              
+              {content && (
+                <ContentDisplay 
+                  content={content}
+                  weatherCondition={weatherData.conditionCode as WeatherCondition}
+                  onRefresh={handleRefreshContent}
+                  isLoading={isLoading}
+                />
+              )}
+            </div>
             
-            {content && (
-              <ContentDisplay 
-                content={content}
-                weatherCondition={weatherData.conditionCode as WeatherCondition}
-                onRefresh={handleRefreshContent}
-                isLoading={isLoading}
-              />
+            {/* Spirit Animal Display */}
+            {weatherData.conditionCode && (
+              <SpiritAnimalDisplay weatherCondition={weatherData.conditionCode as WeatherCondition} />
             )}
           </div>
         )}
