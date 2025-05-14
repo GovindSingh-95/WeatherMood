@@ -32,7 +32,8 @@
 ---
 
 ## 🔗 Live Link
-[Check WeatherMood out](sunny-side-up-quotes.lovable.app)
+[Check WeatherMood now](https://sunny-side-up-quotes.lovable.app/)
+
 
 
 ## 🌐 Tech Stack
