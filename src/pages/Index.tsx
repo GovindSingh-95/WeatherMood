@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import Header from "@/components/Header";
@@ -7,6 +6,7 @@ import LocationInput from "@/components/LocationInput";
 import WeatherDisplay from "@/components/WeatherDisplay";
 import ContentDisplay from "@/components/ContentDisplay";
 import SpiritAnimalDisplay from "@/components/SpiritAnimalDisplay";
+import VibeForecast from "@/components/VibeForecast";
 import { 
   fetchWeatherData, 
   fetchWeatherByCoords, 
@@ -21,6 +21,7 @@ const Index = () => {
   const [content, setContent] = useState<ContentResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [userMood, setUserMood] = useState<string>("calm");
 
   // Fetch content based on weather condition
   const fetchContentForWeather = async (condition: WeatherCondition) => {
@@ -95,6 +96,11 @@ const Index = () => {
     }
   };
 
+  // Update user mood from spirit animal component
+  const handleMoodChange = (newMood: string) => {
+    setUserMood(newMood);
+  };
+
   // Try to get user location on first load
   useEffect(() => {
     const loadInitialData = async () => {
@@ -157,7 +163,20 @@ const Index = () => {
             
             {/* Spirit Animal Display */}
             {weatherData.conditionCode && (
-              <SpiritAnimalDisplay weatherCondition={weatherData.conditionCode as WeatherCondition} />
+              <SpiritAnimalDisplay 
+                weatherCondition={weatherData.conditionCode as WeatherCondition}
+                onMoodChange={handleMoodChange}
+              />
+            )}
+
+            {/* Vibe Forecast */}
+            {weatherData.conditionCode && content && (
+              <VibeForecast 
+                weatherCondition={weatherData.conditionCode as WeatherCondition}
+                contentType={content.type}
+                mood={userMood}
+                temperature={weatherData.temperature}
+              />
             )}
           </div>
         )}

@@ -11,9 +11,10 @@ import { WeatherCondition } from "@/services/weatherApi";
 
 interface SpiritAnimalDisplayProps {
   weatherCondition: WeatherCondition;
+  onMoodChange?: (mood: string) => void;
 }
 
-const SpiritAnimalDisplay = ({ weatherCondition }: SpiritAnimalDisplayProps) => {
+const SpiritAnimalDisplay = ({ weatherCondition, onMoodChange }: SpiritAnimalDisplayProps) => {
   const [mood, setMood] = React.useState<string>("calm");
   const [spiritAnimal, setSpiritAnimal] = React.useState<SpiritAnimal | null>(null);
 
@@ -30,12 +31,18 @@ const SpiritAnimalDisplay = ({ weatherCondition }: SpiritAnimalDisplayProps) => 
 
   const handleMoodChange = (value: string) => {
     setMood(value);
+    if (onMoodChange) {
+      onMoodChange(value);
+    }
     toast.success(`Mood updated to ${value}!`);
   };
 
   const handleRandomize = () => {
     const randomMood = moodOptions[Math.floor(Math.random() * moodOptions.length)].value;
     setMood(randomMood);
+    if (onMoodChange) {
+      onMoodChange(randomMood);
+    }
     toast.success("Finding your new spirit animal!");
   };
 
