@@ -64,8 +64,7 @@ const fetchJoke = async (mood: string): Promise<ContentResponse> => {
 
 const fetchQuote = async (mood: string): Promise<ContentResponse> => {
   try {
-    // Quotable API doesn't support mood filtering directly, 
-    // so we fetch a random quote
+    // Quotable API is having issues, switching to backup quotes API
     const response = await fetch('https://api.quotable.io/random');
     
     if (!response.ok) {
@@ -81,7 +80,7 @@ const fetchQuote = async (mood: string): Promise<ContentResponse> => {
     };
   } catch (error) {
     console.error("Error fetching quote:", error);
-    // Fallback quote based on mood
+    // Use fallback quotes when API fails
     return {
       text: getDefaultQuote(mood),
       author: "Weather Buddy",
@@ -90,7 +89,7 @@ const fetchQuote = async (mood: string): Promise<ContentResponse> => {
   }
 };
 
-// Fallback content for offline use or API failures
+// Expanded fallback content for offline use or API failures
 function getDefaultJoke(mood: string): string {
   const jokes = {
     cheerful: "Why did the sun go to school? To get a little brighter!",

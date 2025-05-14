@@ -28,7 +28,14 @@ const Index = () => {
       setContent(contentData);
     } catch (error) {
       console.error("Error fetching content:", error);
-      toast.error("Failed to fetch content. Please try again.");
+      toast.error("Failed to fetch content. Using fallback content.");
+      
+      // We still want to show some content, even if API fails
+      const fallbackContent: ContentResponse = {
+        text: `Weather-themed ${condition === 'sunny' ? 'joke' : 'quote'} not available right now.`,
+        type: condition === 'sunny' ? 'joke' : 'quote'
+      };
+      setContent(fallbackContent);
     }
   };
 
