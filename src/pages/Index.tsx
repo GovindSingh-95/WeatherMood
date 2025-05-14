@@ -41,6 +41,7 @@ const Index = () => {
       const data = await fetchWeatherData(location);
       setWeatherData(data);
       await fetchContentForWeather(data.conditionCode as WeatherCondition);
+      toast.success(`Weather found for ${data.location}`);
     } catch (error) {
       console.error("Error:", error);
       setError("Location not found. Please try another city.");
@@ -60,6 +61,7 @@ const Index = () => {
       const data = await fetchWeatherByCoords(lat, lon);
       setWeatherData(data);
       await fetchContentForWeather(data.conditionCode as WeatherCondition);
+      toast.success(`Weather found for ${data.location}`);
     } catch (error) {
       console.error("Error:", error);
       setError("Could not determine your location. Please enable location services or enter a city manually.");
@@ -76,6 +78,7 @@ const Index = () => {
     setIsLoading(true);
     try {
       await fetchContentForWeather(weatherData.conditionCode as WeatherCondition);
+      toast.success("Content refreshed");
     } catch (error) {
       console.error("Error refreshing content:", error);
       toast.error("Failed to refresh content. Please try again.");

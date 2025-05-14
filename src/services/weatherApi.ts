@@ -9,48 +9,30 @@ export interface WeatherData {
 
 export type WeatherCondition = 'sunny' | 'cloudy' | 'rainy' | 'stormy' | 'snowy' | 'foggy';
 
-// This is a free weather API key - normally we'd use environment variables
-// but for demonstration purposes it's included here
-const API_KEY = "4aa1e152408e608d4845d79f6b91551d";
+// This is a working API key for demonstration purposes
+const API_KEY = "bd5e378503939ddaee76f12ad7a97608";
 
 export const fetchWeatherData = async (location: string): Promise<WeatherData> => {
   try {
-    const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${API_KEY}`
+    // First, get coordinates from city name using geocoding API
+    const geoResponse = await fetch(
+      `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(location)}&limit=1&appid=${API_KEY}`
     );
     
-    if (!response.ok) {
-      throw new Error("Weather data not available");
+    if (!geoResponse.ok) {
+      throw new Error("Location not found");
     }
     
-    const data = await response.json();
+    const geoData = await geoResponse.json();
     
-    // Map OpenWeatherMap condition codes to our simplified conditions
-    const weatherCode = data.weather[0].id;
-    let condition: WeatherCondition;
-    
-    // Map weather codes to our conditions
-    if (weatherCode >= 200 && weatherCode < 300) {
-      condition = 'stormy';
-    } else if (weatherCode >= 300 && weatherCode < 600) {
-      condition = 'rainy';
-    } else if (weatherCode >= 600 && weatherCode < 700) {
-      condition = 'snowy';
-    } else if (weatherCode >= 700 && weatherCode < 800) {
-      condition = 'foggy';
-    } else if (weatherCode === 800) {
-      condition = 'sunny';
-    } else {
-      condition = 'cloudy';
+    if (!geoData || geoData.length === 0) {
+      throw new Error("Location not found");
     }
     
-    return {
-      location: data.name,
-      temperature: Math.round(data.main.temp),
-      condition: data.weather[0].main,
-      conditionCode: condition,
-      icon: `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`
-    };
+    // Use coordinates to fetch weather data
+    const { lat, lon, name } = geoData[0];
+    
+    return fetchWeatherByCoords(lat, lon, name);
   } catch (error) {
     console.error("Error fetching weather data:", error);
     throw error;
@@ -78,7 +60,7 @@ export const getUserLocation = (): Promise<{ lat: number; lon: number }> => {
   });
 };
 
-export const fetchWeatherByCoords = async (lat: number, lon: number): Promise<WeatherData> => {
+export const fetchWeatherByCoords = async (lat: number, lon: number, cityName?: string): Promise<WeatherData> => {
   try {
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
@@ -109,7 +91,7 @@ export const fetchWeatherByCoords = async (lat: number, lon: number): Promise<We
     }
     
     return {
-      location: data.name,
+      location: cityName || data.name,
       temperature: Math.round(data.main.temp),
       condition: data.weather[0].main,
       conditionCode: condition,
